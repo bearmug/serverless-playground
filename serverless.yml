@@ -11,7 +11,7 @@ functions:
       individually: true
       artifact: build/function.zip
     runtime: provided
-    memorySize: 128
+    memorySize: 256
     handler: not.used.in.provided.runtime
     events:
       - http:

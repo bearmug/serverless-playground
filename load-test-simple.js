@@ -2,7 +2,7 @@ import { check } from "k6";
 import http from "k6/http";
 
 export let options = {
-    minIterationDuration: "1s",
+    minIterationDuration: "50ms",
     vus: 1,
     vusMax: 1,
     duration: "10s"
