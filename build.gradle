@@ -21,6 +21,7 @@ configurations {
 dependencies {
     annotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
     annotationProcessor "io.micronaut:micronaut-graal"
+    annotationProcessor "io.micronaut:micronaut-inject-java"
     compileOnly "com.oracle.substratevm:svm"
     implementation platform("io.micronaut:micronaut-bom:$micronautVersion")
     implementation "io.micronaut:micronaut-http-client"
@@ -59,7 +60,7 @@ task graalAssemble(type: Exec, group: 'serverless') {
     inputs.files(
             project.fileTree(dir: "src", include: "**/*.*"),
             file('Dockerfile'),
-            file('bootstrap.gradle'))
+            file('build.gradle'))
     outputs.file('build/function.zip')
     commandLine 'bash', '-c',
             "docker build . -t serverless-playground &&" +
