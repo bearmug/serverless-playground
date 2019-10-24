@@ -1,0 +1,96 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '5.1.0'
+    id 'application'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+version '0.1'
+group 'bearmug.lambda'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jcenter.bintray.com' }
+}
+
+configurations {
+    developmentOnly
+}
+
+dependencies {
+    annotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
+    annotationProcessor "io.micronaut:micronaut-graal"
+    compileOnly "com.oracle.substratevm:svm"
+    implementation platform("io.micronaut:micronaut-bom:$micronautVersion")
+    implementation "io.micronaut:micronaut-http-client"
+    implementation "io.micronaut:micronaut-runtime"
+    implementation("io.micronaut.aws:micronaut-function-aws-custom-runtime") {
+        exclude group: "com.fasterxml.jackson.module", module: "jackson-module-afterburner"
+    }
+    implementation("io.micronaut.aws:micronaut-function-aws-api-proxy") {
+        exclude group: "com.fasterxml.jackson.module", module: "jackson-module-afterburner"
+    }
+    runtimeOnly "ch.qos.logback:logback-classic:1.2.3"
+}
+
+mainClassName = "bearmug.lambda.Application"
+
+shadowJar {
+    mergeServiceFiles()
+}
+
+run.classpath += configurations.developmentOnly
+run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
+tasks.withType(JavaCompile){
+    options.encoding = "UTF-8"
+    options.compilerArgs.add('-parameters')
+}
+task buildZip(type: Zip) {
+    from sourceSets.main.output
+    into('lib') {
+        from configurations.compileClasspath
+        from configurations.runtimeClasspath
+    }
+}
+shadowJar.dependsOn buildZip
+
+task graalAssemble(type: Exec, group: 'serverless') {
+    inputs.files(
+            project.fileTree(dir: "src", include: "**/*.*"),
+            file('Dockerfile'),
+            file('bootstrap.gradle'))
+    outputs.file('build/function.zip')
+    commandLine 'bash', '-c',
+            "docker build . -t serverless-playground &&" +
+            "mkdir -p build &&" +
+            "docker run --rm --entrypoint cat serverless-playground  /home/application/function.zip > build/function.zip"
+}
+task serverlessDeploy(
+        type: Exec,
+        group: 'serverless',
+        dependsOn: ['assemble', 'graalAssemble']) {
+    commandLine 'bash', '-c', "serverless deploy"
+}
+
+task serverlessRemove(type: Exec, group: 'serverless') {
+    commandLine 'bash', '-c', "serverless remove"
+}
+
+task serverlessLogsJava(type: Exec, group: 'serverless') {
+    commandLine 'bash', '-c', "serverless logs -f serverless-mn-java8"
+}
+
+task serverlessLogsGraal(type: Exec, group: 'serverless') {
+    commandLine 'bash', '-c', "serverless logs -f serverless-mn-graal"
+}
+
+def url = project.hasProperty('urlArg') ? urlArg : null
+task loadTest(type: Exec) {
+    doFirst {
+        if (url == null) {
+            throw new IllegalStateException('Please set URL to run load test against: -PurlArg=<your-url-here>')
+        }
+    }
+    commandLine 'bash', '-c', "docker run -i loadimpact/k6 run -e url=$url -< load-test-simple.js"
+}

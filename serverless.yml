@@ -1,0 +1,32 @@
+service: my-serverless-experiment
+
+provider:
+  name: aws
+  region: eu-west-1
+  stage: playground
+
+functions:
+  serverless-mn-graal:
+    package:
+      individually: true
+      artifact: build/function.zip
+    runtime: provided
+    memorySize: 128
+    handler: not.used.in.provided.runtime
+    events:
+      - http:
+          path: ping/graal
+          method: get
+
+  serverless-mn-java8:
+    package:
+      individually: true
+      artifact: build/distributions/serverless-playground-0.1.zip
+    runtime: java8
+    memorySize: 256
+    handler: bearmug.lambda.StreamLambdaHandler::handleRequest
+    events:
+      - http:
+          path: ping/java
+          method: get
+
