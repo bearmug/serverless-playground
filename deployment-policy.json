@@ -29,6 +29,7 @@
         "lambda:DeleteFunction",
         "lambda:GetFunction",
         "lambda:GetFunctionConfiguration",
+        "lambda:InvokeFunction",
         "lambda:ListVersionsByFunction",
         "lambda:PublishVersion",
         "lambda:RemovePermission",

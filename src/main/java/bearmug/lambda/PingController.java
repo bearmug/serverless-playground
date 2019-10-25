@@ -21,7 +21,7 @@ public class PingController {
     }
 
     private String ping() {
-        log.trace("Received a ping.");
+        log.info("Received a ping.");
         return "{\"pong\":true}";
     }
 }
