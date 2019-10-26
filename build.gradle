@@ -1,6 +1,7 @@
 plugins {
     id 'com.github.johnrengelman.shadow' version '5.1.0'
     id 'application'
+    id 'groovy'
 }
 
 sourceCompatibility = 1.8
@@ -21,15 +22,21 @@ configurations {
 dependencies {
     annotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
     annotationProcessor "io.micronaut:micronaut-graal"
+    annotationProcessor 'org.projectlombok:lombok:1.18.10'
     annotationProcessor "io.micronaut:micronaut-inject-java"
     compileOnly "com.oracle.substratevm:svm"
+    compileOnly 'org.projectlombok:lombok:1.18.10'
     implementation platform("io.micronaut:micronaut-bom:$micronautVersion")
     implementation "io.micronaut:micronaut-runtime"
     implementation("io.micronaut.aws:micronaut-function-aws-custom-runtime") {
         exclude group: "com.fasterxml.jackson.module", module: "jackson-module-afterburner"
     }
     runtimeOnly "ch.qos.logback:logback-classic:1.3.0-alpha4"
-    testRuntimeOnly "io.micronaut:micronaut-http-server-netty"
+    testImplementation "io.micronaut.test:micronaut-test-spock"
+    testImplementation "io.micronaut:micronaut-inject-groovy"
+    testImplementation("org.spockframework:spock-core") {
+        exclude group: "org.codehaus.groovy", module: "groovy-all"
+    }
 }
 
 mainClassName = "bearmug.lambda.Application"
@@ -75,12 +82,16 @@ task serverlessRemove(type: Exec, group: 'serverless') {
     commandLine 'bash', '-c', "serverless remove"
 }
 
-task serverlessLogsJava(type: Exec, group: 'serverless') {
-    commandLine 'bash', '-c', "serverless logs -f serverless-mn-java8"
+task serverlessStatsJava(type: Exec, group: 'serverless') {
+    def fn = '-f serverless-mn-java8'
+    commandLine 'bash', '-c',
+            "serverless logs $fn  && serverless info $fn && serverless metrics $fn"
 }
 
-task serverlessLogsGraal(type: Exec, group: 'serverless') {
-    commandLine 'bash', '-c', "serverless logs -f serverless-mn-graal"
+task serverlessStatsGraal(type: Exec, group: 'serverless') {
+    def fn = '-f serverless-mn-graal'
+    commandLine 'bash', '-c',
+            "serverless logs $fn  && serverless info $fn && serverless metrics $fn"
 }
 
 def url = project.hasProperty('urlArg') ? urlArg : null

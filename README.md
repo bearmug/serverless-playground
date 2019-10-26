@@ -50,9 +50,9 @@ serverless info
 
 ## Logs review
 ```bash
-./gradlew serverlessLogsGraal # request logs from Cloud Watch and see them into console
-./gradlew serverlessLogsJava #
+./gradlew serverlessStatsGraal # request logs and stats from Cloud Watch and see them into console
+./gradlew serverlessStatsJava #
 ...
-./gradlew sLG
-./gradlew sLJ
+./gradlew sSG
+./gradlew sSJ
 ```

@@ -7,3 +7,5 @@ gradle-app.setting
 .idea/
 
 .serverless/
+
+lombok.config

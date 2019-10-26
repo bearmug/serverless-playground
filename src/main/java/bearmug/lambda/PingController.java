@@ -2,26 +2,22 @@ package bearmug.lambda;
 
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
 
 @Controller("/ping")
 public class PingController {
 
-	private Logger log = LoggerFactory.getLogger(PingController.class);
+	@Inject
+	PingService pingService;
 
     @Get("/java")
     public String pingJava() {
-        return ping();
+        return pingService.pong();
     }
 
     @Get("/graal")
     public String pingGraal() {
-        return ping();
-    }
-
-    private String ping() {
-        log.info("Received a ping.");
-        return "{\"pong\":true}";
+        return pingService.pong();
     }
 }
