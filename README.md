@@ -48,7 +48,46 @@ You can find URLs to test from serverless deployment command or from service inf
 serverless info
 ```
 
-## Logs review
+AWS-side timings captured from CloudWatch Insights with query:
+```bash
+fields @timestamp, @duration, @billedDuration
+| filter ispresent(@duration)
+| stats count(),                # calls total number
+        sum(@billedDuration),   # billed time, total
+        sum(@duration),         # call time sum, total
+        pct(@duration, 50),     # 50%-ile for calls timings
+        pct(@duration, 95),     # 95%-ile
+        pct(@duration, 99)      # 99%-ile 
+by bin(5m)
+```
+
+### Performance samples
+Simplest test [scenario](./load-test-simple.js) with single virtual user and constant load gives numbers below
+#### Client-side measurements, cold-start calls
+```bash
+http_req_duration..........: avg=200.77ms min=56.35ms  med=66.61ms  max=4.95s    p(90)=151.72ms p(95)=185.44ms #java
+http_req_duration..........: avg=86.52ms  min=56.84ms  med=62.28ms  max=929.05ms p(90)=158.46ms p(95)=187.87ms #graal
+```
+
+#### AWS-side CloudWatch stats, cold-start calls
+```bash
+count=49  sum(@billedDuration)=7400ms  sum(@duration)=2738.16ms p(50)=2.16ms p(90)=14.17ms p(95)=39.01ms #java8
+count=115 sum(@billedDuration)=12100ms sum(@duration)=1047.25ms p(50)=1.73ms p(90)=17.18ms p(95)=37.87ms #graal
+```
+
+#### Client-side measurements, warm calls
+```bash
+http_req_duration..........: avg=93.37ms  min=57.47ms  med=61.64ms  max=448.69ms p(90)=185.01ms p(95)=226.59ms #java8
+http_req_duration..........: avg=81.28ms  min=56.59ms  med=61.6ms   max=351.74ms p(90)=152.94ms p(95)=206.24ms #graal
+```
+
+#### AWS-side CloudWatch stats, warm calls
+```bash
+count=108 sum(@billedDuration)=10800ms sum(@duration)=335.66ms p(50)=1.88ms p(90)=12.14ms p(95)=14.47ms #java8
+count=122 sum(@billedDuration)=12300ms sum(@duration)=436.02ms p(50)=1.69ms p(90)=2.18ms  p(95)=12.62ms #graal
+```
+
+## Logs and stats review
 ```bash
 ./gradlew serverlessStatsGraal # request logs and stats from Cloud Watch and see them into console
 ./gradlew serverlessStatsJava #
