@@ -1,9 +1,11 @@
+org: pavelfadeev
+app: my-serverless-experiment
 service: my-serverless-experiment
 
 provider:
   name: aws
   region: eu-west-1
-  stage: playground
+  stage: dev
 
 functions:
   serverless-mn-graal:
