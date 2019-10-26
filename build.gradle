@@ -32,6 +32,7 @@ dependencies {
         exclude group: "com.fasterxml.jackson.module", module: "jackson-module-afterburner"
     }
     runtimeOnly "ch.qos.logback:logback-classic:1.3.0-alpha4"
+    testCompile "io.micronaut:micronaut-http-server-netty"
     testImplementation "io.micronaut.test:micronaut-test-spock"
     testImplementation "io.micronaut:micronaut-inject-groovy"
     testImplementation("org.spockframework:spock-core") {
@@ -74,7 +75,7 @@ task graalAssemble(type: Exec, group: 'serverless') {
 task serverlessDeploy(
         type: Exec,
         group: 'serverless',
-        dependsOn: ['assemble', 'graalAssemble']) {
+        dependsOn: ['build', 'graalAssemble']) {
     commandLine 'bash', '-c', "serverless deploy"
 }
 

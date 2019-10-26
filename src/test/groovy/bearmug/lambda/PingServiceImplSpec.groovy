@@ -16,6 +16,6 @@ class PingServiceImplSpec extends Specification {
         def response = pingService.pong()
 
         then:
-        response == '{"pong":true}'
+        response == '{ "pong" : true }'
     }
 }
