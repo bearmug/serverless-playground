@@ -4,7 +4,7 @@ service: my-serverless-experiment
 
 provider:
   name: aws
-  region: eu-west-1
+  region: eu-north-1
   stage: dev
 
 functions:
@@ -20,7 +20,7 @@ functions:
           path: ping/graal
           method: get
 
-  serverless-mn-java8:
+  serverless-mn-java:
     package:
       individually: true
       artifact: build/distributions/serverless-playground-0.1.zip
@@ -30,5 +30,20 @@ functions:
     events:
       - http:
           path: ping/java
+          method: get
+
+  serverless-nodejs:
+    package:
+      individually: true
+      exclude:
+        - ./**
+      include:
+        - handler.js
+    runtime: nodejs10.x
+    memorySize: 256
+    handler: handler.ping
+    events:
+      - http:
+          path: ping/nodejs
           method: get
 

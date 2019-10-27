@@ -40,6 +40,7 @@
         "logs:DeleteLogGroup",
         "logs:DescribeLogGroups",
         "logs:PutSubscriptionFilter",
+        "logs:DeleteSubscriptionFilter",
         "s3:CreateBucket",
         "s3:DeleteBucket",
         "s3:DeleteObject",
