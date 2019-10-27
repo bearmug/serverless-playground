@@ -21,7 +21,7 @@ Experimentation implemented with AWS platform. There is an assumption that you h
 
 ### AWS role
 Serverless framework needs a set of permissions in order to deploy application stack. You may find full permissions list 
-into attached [policy](./deployment-policy.json). This one has to be linked to AWS user. Remember to provide Serverless
+into attached [policy](config/serverless/deployment-policy.json). This one has to be linked to AWS user. Remember to provide Serverless
 with AWS user configuration, the simplest approach is to export keys variables:
 ```bash
 export AWS_ACCESS_KEY_ID=<your access key here>
@@ -36,9 +36,9 @@ export AWS_SECRET_ACCESS_KEY=<your secret key>
 ```
 
 ## Performance validation
-Load test runs [simplified scenario](./load-test-simple.js) by default, which likeli fits to lambda [free
+Load test runs [simplified scenario](config/load-test/load-test-simple.js) by default, which likeli fits to lambda [free
 usage tier](https://aws.amazon.com/ru/lambda/pricing/). Otherwise, feel free to use alternative 
-[scenario](./load-test-ramping.js). Default load test configuration could be triggered like:
+[scenario](config/load-test/load-test-ramping.js). Default load test configuration could be triggered like:
 ```bash
 ./gradlew loadTest -PurlArg=https://xxx.execute-api.eu-west-1.amazonaws.com/playground/ping/graal
 ./gradlew loadTest -PurlArg=https://xxx.execute-api.eu-west-1.amazonaws.com/playground/ping/java
@@ -62,7 +62,7 @@ by bin(5m)
 ```
 
 ### Performance samples
-Simplest test [scenario](./load-test-simple.js) with single virtual user and constant load gives numbers below
+Simplest test [scenario](config/load-test/load-test-simple.js) with single virtual user and constant load gives numbers below
 #### Client-side measurements, cold-start calls
 ```bash
 http_req_duration..........: avg=200.77ms min=56.35ms  med=66.61ms  max=4.95s    p(90)=151.72ms p(95)=185.44ms #java

@@ -38,10 +38,10 @@ functions:
       exclude:
         - ./**
       include:
-        - handler.js
+        - src/main/nodejs/handler.js
     runtime: nodejs10.x
     memorySize: 256
-    handler: handler.ping
+    handler: src/main/nodejs/handler.ping
     events:
       - http:
           path: ping/nodejs
