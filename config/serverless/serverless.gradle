@@ -10,6 +10,25 @@ task graalAssemble(type: Exec, group: 'serverless') {
                     "mkdir -p build &&" +
                     "docker run --rm --entrypoint cat $tag  /home/application/function.zip > build/function.zip"
 }
+
+def gcpTag = 'gcp-serverless-graal'
+task gcpAssemble(type: Exec, group: 'serverless') {
+    commandLine 'bash', '-c',
+            "docker build . -t $gcpTag -f $rootDir/config/graal/Dockerfile-gcp"
+}
+
+task startGcpLocal(type: Exec, group: 'serverless') {
+    commandLine 'bash', '-c',
+            "docker run --rm --name $gcpTag -p 8080:8080 -d $gcpTag && " +
+            "docker ps"
+}
+
+task stopGcpLocal(type: Exec, group: 'serverless') {
+    commandLine 'bash', '-c',
+            "docker kill $gcpTag && " +
+            "docker ps"
+}
+
 task serverlessDeploy(
         type: Exec,
         group: 'serverless',
