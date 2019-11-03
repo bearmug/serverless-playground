@@ -2,6 +2,8 @@
 FROM gradle:5.1.1-jdk-alpine as gradle
 COPY --chown=gradle:gradle . /home/application
 WORKDIR /home/application
+RUN cp config/graal/native-image-gcp-cloudrun.properties \
+       src/main/resources/META-INF/native-image/lambda.graal/lambda-graal-application/native-image.properties
 RUN gradle build --no-daemon
 
 # Stage 2: Build the native image
