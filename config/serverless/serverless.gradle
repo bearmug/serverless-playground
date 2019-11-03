@@ -1,44 +1,87 @@
-task graalAssemble(type: Exec, group: 'serverless') {
+//GCP tasks=====================================================================
+def gcpTag = 'gcp-serverless-graal'
+task gcpAssemble(type: Exec, group: 'serverless') {
     inputs.files(
             project.fileTree(dir: "src", include: "**/*.*"),
-            file('Dockerfile'),
+            file('config/graal/Dockerfile-gcp-cloudrun'),
+            file('build.gradle'))
+    outputs.file("build/$gcpTag-version")
+    commandLine 'bash', '-c',
+            "docker build . " +
+                    "-t $gcpTag " +
+                    "-t eu.gcr.io/gcp-serverless-257812/$gcpTag " +
+                    "-f $rootDir/config/graal/Dockerfile-gcp-cloudrun &&" +
+                    "docker images -q $gcpTag > build/$gcpTag-version"
+}
+
+task gcpDeploy(type: Exec, group: 'serverless', dependsOn: 'gcpAssemble') {
+    commandLine 'bash', '-c',
+            "docker push eu.gcr.io/gcp-serverless-257812/$gcpTag && " +
+            "gcloud beta run deploy " +
+                    "$gcpTag " +
+                    "--platform=managed " +
+                    "--region=europe-west1 " +
+                    "--max-instances=1 " +
+                    "--concurrency=10 " +
+                    "--image=eu.gcr.io/gcp-serverless-257812/$gcpTag"
+}
+
+task gcpStartLocal(type: Exec, group: 'serverless', dependsOn: 'gcpAssemble') {
+    commandLine 'bash', '-c',
+            "docker run --rm --name $gcpTag -p 8080:8080 -d $gcpTag && " +
+                    "docker ps"
+}
+
+task gcpStopLocal(type: Exec, group: 'serverless') {
+    commandLine 'bash', '-c',
+            "docker kill $gcpTag && " +
+                    "docker ps"
+}
+
+//AWS tasks=====================================================================
+task awsLambdaAssemble(type: Exec, group: 'serverless') {
+    inputs.files(
+            project.fileTree(dir: "src", include: "**/*.*"),
+            file('config/graal/Dockerfile-aws-lambda'),
             file('build.gradle'))
     outputs.file('build/function.zip')
     def tag = 'serverless-graal'
     commandLine 'bash', '-c',
-            "docker build . -t $tag -f $rootDir/config/graal/Dockerfile &&" +
+            "docker build . -t $tag -f $rootDir/config/graal/Dockerfile-aws-lambda &&" +
                     "mkdir -p build &&" +
                     "docker run --rm --entrypoint cat $tag  /home/application/function.zip > build/function.zip"
 }
-task serverlessDeploy(
+
+task awsLambdaDeploy(
         type: Exec,
         group: 'serverless',
-        dependsOn: ['build', 'graalAssemble']) {
+        dependsOn: ['build', 'awsLambdaAssemble']) {
     commandLine 'bash', '-c', "serverless deploy"
 }
 
-task serverlessRemove(type: Exec, group: 'serverless') {
+task awsLambdaRemove(type: Exec, group: 'serverless') {
     commandLine 'bash', '-c', "serverless remove"
 }
 
-task serverlessStatsJava(type: Exec, group: 'serverless') {
+task awsLambdaStatsJava(type: Exec, group: 'serverless') {
     def fn = '-f serverless-mn-java'
     commandLine 'bash', '-c',
             "serverless logs $fn  && serverless info $fn && serverless metrics $fn"
 }
 
-task serverlessStatsGraal(type: Exec, group: 'serverless') {
+task awsLambdaStatsGraal(type: Exec, group: 'serverless') {
     def fn = '-f serverless-mn-graal'
     commandLine 'bash', '-c',
             "serverless logs $fn  && serverless info $fn && serverless metrics $fn"
 }
 
-task serverlessStatsNode(type: Exec, group: 'serverless') {
+task awsLambdaStatsNode(type: Exec, group: 'serverless') {
     def fn = '-f serverless-nodejs'
     commandLine 'bash', '-c',
             "serverless logs $fn  && serverless info $fn && serverless metrics $fn"
 }
 
+//K6 tasks=====================================================================
 def url = project.hasProperty('urlArg') ? urlArg : null
 task loadTest(type: Exec) {
     doFirst {

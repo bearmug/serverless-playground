@@ -33,6 +33,7 @@ dependencies {
     implementation("io.micronaut.aws:micronaut-function-aws-custom-runtime") {
         exclude group: "com.fasterxml.jackson.module", module: "jackson-module-afterburner"
     }
+    runtimeOnly "io.micronaut:micronaut-http-server-netty"
     runtimeOnly "ch.qos.logback:logback-classic:1.3.0-alpha4"
     testCompile "io.micronaut:micronaut-http-server-netty"
     testImplementation "io.micronaut.test:micronaut-test-spock"
