@@ -1,3 +1,23 @@
+- [GCP Cloud Run (Beta) with GraalVM Native Images](#gcp-cloud-run--beta--with-graalvm-native-images)
+  * [Runnable image](#runnable-image)
+  * [Pre-requisites](#pre-requisites)
+    + [GCP tooling and integrations](#gcp-tooling-and-integrations)
+    + [Local docker setup](#local-docker-setup)
+  * [Deployment](#deployment)
+    + [Local experimentation](#local-experimentation)
+    + [Cloud delivery](#cloud-delivery)
+  * [Load testing](#load-testing)
+    + [First runs after deployment](#first-runs-after-deployment)
+    + [Attempts to catch "customer cold-starts"](#attempts-to-catch--customer-cold-starts-)
+      - [Test #1](#test--1)
+      - [Test #2](#test--2)
+    + [Warm runs](#warm-runs)
+    + [Performance samples](#performance-samples)
+      - [Client-side deploy loop measurements](#client-side-deploy-loop-measurements)
+      - [Client-side k6-based measurements](#client-side-k6-based-measurements)
+      - [GCP side k6-based measurements](#gcp-side-k6-based-measurements)
+    + [Performance measurement outcomes](#performance-measurement-outcomes)
+
 # GCP Cloud Run (Beta) with GraalVM Native Images
 This experiment is trying to touch [GCP Cloud Run](https://cloud.google.com/run/). The main question - 
 does it worth efforts to run native images there? What about cold start timings? 
