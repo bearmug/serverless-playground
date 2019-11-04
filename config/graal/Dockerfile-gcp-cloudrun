@@ -11,7 +11,12 @@ FROM oracle/graalvm-ce:19.2.1 as graalvm
 COPY --from=gradle /home/application/build/libs/serverless-playground-*-all.jar /home/application/server.jar
 WORKDIR /home/application
 RUN gu install native-image
-RUN native-image --no-server --no-fallback -cp server.jar
+RUN native-image \
+    --no-server \
+    --no-fallback \
+    --initialize-at-build-time=reactor.core.publisher.Flux \
+    --initialize-at-build-time=reactor.core.publisher.Mono \
+    -cp server.jar
 
 # Stage 3: Prepare Server
 FROM frolvlad/alpine-glibc

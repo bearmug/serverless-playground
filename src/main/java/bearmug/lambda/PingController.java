@@ -2,6 +2,7 @@ package bearmug.lambda;
 
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
+import reactor.core.publisher.Mono;
 
 import javax.inject.Inject;
 
@@ -12,12 +13,12 @@ public class PingController {
 	PingService pingService;
 
     @Get("/java")
-    public String pingJava() {
-        return pingService.pong();
+    public Mono<String> pingJava() {
+        return Mono.just(pingService.pong());
     }
 
     @Get("/graal")
-    public String pingGraal() {
-        return pingService.pong();
+    public Mono<String> pingGraal() {
+        return Mono.just(pingService.pong());
     }
 }
