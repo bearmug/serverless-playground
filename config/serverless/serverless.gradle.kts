@@ -1,3 +1,4 @@
+val gcpProjectId: String by project
 tasks {
     //GCP tasks=====================================================================
     val gcpTag = "gcp-serverless-graal"
@@ -11,7 +12,7 @@ tasks {
         commandLine("bash", "-c",
                 "docker build . " +
                         "-t $gcpTag " +
-                        "-t eu.gcr.io/gcp-serverless-257812/$gcpTag " +
+                        "-t eu.gcr.io/$gcpProjectId/$gcpTag " +
                         "-f $rootDir/config/graal/Dockerfile-gcp-cloudrun && " +
                         "docker images -q $gcpTag > build/$gcpTag-version")
     }
@@ -20,7 +21,7 @@ tasks {
         group = "serverless"
         dependsOn("gcpAssemble")
         commandLine("bash", "-c",
-                "docker push eu.gcr.io/gcp-serverless-257812/$gcpTag && " +
+                "docker push eu.gcr.io/$gcpProjectId/$gcpTag && " +
                         "gcloud beta run deploy " +
                         "$gcpTag " +
                         "--platform=managed " +
@@ -28,7 +29,7 @@ tasks {
                         "--region=europe-west1 " +
                         "--max-instances=1 " +
                         "--concurrency=10 " +
-                        "--image=eu.gcr.io/gcp-serverless-257812/$gcpTag")
+                        "--image=eu.gcr.io/$gcpProjectId/$gcpTag")
     }
 
     register<Exec>("gcpStartLocal") {

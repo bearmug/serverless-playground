@@ -23,22 +23,22 @@ repositories {
 val micronautVersion: String by project
 dependencies {
     annotationProcessor(platform("io.micronaut:micronaut-bom:$micronautVersion"))
-    annotationProcessor("io.micronaut:micronaut-graal:$micronautVersion")
+    annotationProcessor("io.micronaut:micronaut-graal")
     annotationProcessor("org.projectlombok:lombok:1.18.10")
-    annotationProcessor("io.micronaut:micronaut-inject-java:$micronautVersion")
+    annotationProcessor("io.micronaut:micronaut-inject-java")
     compileOnly("com.oracle.substratevm:svm")
     compileOnly("org.projectlombok:lombok:1.18.10")
     implementation(platform("io.micronaut:micronaut-bom:$micronautVersion"))
-    implementation("io.micronaut:micronaut-runtime:$micronautVersion")
+    implementation("io.micronaut:micronaut-runtime")
     implementation("io.projectreactor:reactor-core")
-    implementation("io.micronaut.aws:micronaut-function-aws-custom-runtime:$micronautVersion") {
+    implementation("io.micronaut.aws:micronaut-function-aws-custom-runtime") {
         exclude(group = "com.fasterxml.jackson.module", module = "jackson-module-afterburner")
     }
-    runtimeOnly("io.micronaut:micronaut-http-server-netty:$micronautVersion")
+    runtimeOnly("io.micronaut:micronaut-http-server-netty")
     runtimeOnly("ch.qos.logback:logback-classic:1.3.0-alpha4")
-    testCompile("io.micronaut:micronaut-http-server-netty:$micronautVersion")
-    testImplementation("io.micronaut.test:micronaut-test-spock:$micronautVersion")
-    testImplementation("io.micronaut:micronaut-inject-groovy:$micronautVersion")
+    testCompile("io.micronaut:micronaut-http-server-netty")
+    testImplementation("io.micronaut.test:micronaut-test-spock")
+    testImplementation("io.micronaut:micronaut-inject-groovy")
     testImplementation("org.spockframework:spock-core") {
         exclude(group = "org.codehaus.groovy", module = "groovy-all")
     }
