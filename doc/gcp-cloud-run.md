@@ -40,6 +40,7 @@ build and subsequent cloud deployment command.
   or [it's apt-get variance](https://cloud.google.com/sdk/docs/downloads-apt-get). 
 * Your GCP project should have billing enabled. No worries, project load tests are supposed to 
   keep you within free tier, see **pricing** section [here](https://cloud.google.com/run/).
+* Remember to put your GCP project id to [gradle.properties](../gradle.properties) file.  
 * Please ensure you authorized Docker to [publish images](https://cloud.google.com/container-registry/docs/quickstart) 
   to GCP registry. Simple call `gcloud auth configure-docker` works for me.
 

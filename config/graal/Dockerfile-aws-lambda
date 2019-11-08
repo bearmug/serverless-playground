@@ -30,7 +30,11 @@ FROM graalvm
 COPY --from=builder /home/application/ /home/application/
 WORKDIR /home/application
 RUN /usr/lib/graalvm/bin/gu install native-image
-RUN /usr/lib/graalvm/bin/native-image --no-server -cp build/libs/serverless-playground-*-all.jar
+RUN /usr/lib/graalvm/bin/native-image \
+    --no-server \
+    --initialize-at-build-time=reactor.core.publisher.Flux \
+    --initialize-at-build-time=reactor.core.publisher.Mono \
+    -cp build/libs/serverless-playground-*-all.jar
 RUN chmod 755 bootstrap
 RUN chmod 755 server
 RUN zip -j function.zip bootstrap server 

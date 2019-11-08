@@ -9,7 +9,7 @@ public class PingServiceImpl implements PingService {
 
     @Override
     public String pong() {
-        log.info("Received a ping.");
+        log.trace("Received a ping.");
         return "{ \"pong\" : true }";
     }
 }
