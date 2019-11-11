@@ -9,27 +9,25 @@ tasks {
                 file("config/graal/Dockerfile-gcp-cloudrun"),
                 file("build.gradle"))
         outputs.file("build/$gcpTag-version")
-        commandLine("bash", "-c",
-                "docker build . " +
-                        "-t $gcpTag " +
-                        "-t eu.gcr.io/$gcpProjectId/$gcpTag " +
-                        "-f $rootDir/config/graal/Dockerfile-gcp-cloudrun && " +
-                        "docker images -q $gcpTag > build/$gcpTag-version")
+        commandLine("bash", "-c","""docker build . \
+                                               |-t $gcpTag \
+                                               |-t eu.gcr.io/$gcpProjectId/$gcpTag \
+                                               |-f $rootDir/config/graal/Dockerfile-gcp-cloudrun && \
+                                               |docker images -q $gcpTag > build/$gcpTag-version""".trimMargin())
     }
 
     register<Exec>("gcpDeploy") {
         group = "serverless"
         dependsOn("gcpAssemble")
-        commandLine("bash", "-c",
-                "docker push eu.gcr.io/$gcpProjectId/$gcpTag && " +
-                        "gcloud beta run deploy " +
-                        "$gcpTag " +
-                        "--platform=managed " +
-                        "--allow-unauthenticated " +
-                        "--region=europe-west1 " +
-                        "--max-instances=1 " +
-                        "--concurrency=10 " +
-                        "--image=eu.gcr.io/$gcpProjectId/$gcpTag")
+        commandLine("bash", "-c", """docker push eu.gcr.io/$gcpProjectId/$gcpTag && \
+                                                |gcloud beta run deploy \
+                                                |$gcpTag \
+                                                |--platform=managed \
+                                                |--allow-unauthenticated \
+                                                |--region=europe-west1 \
+                                                |--max-instances=1 \
+                                                |--concurrency=10 \
+                                                |--image=eu.gcr.io/$gcpProjectId/$gcpTag""".trimMargin())
     }
 
     register<Exec>("gcpStartLocal") {
@@ -98,7 +96,9 @@ tasks {
         doFirst {
             checkNotNull(url) { "Please set URL to run load test against: -PurlArg=<your-url-here>" }
         }
-        commandLine("bash", "-c",
-                "docker run -i loadimpact/k6 run -e url=$url -< $rootDir/config/load-test/load-test-simple.js")
+        commandLine("bash", "-c", """docker run \
+                                                |-i loadimpact/k6 run \
+                                                |-e url=$url \
+                                                |-< $rootDir/config/load-test/load-test-simple.js""".trimMargin())
     }
 }
