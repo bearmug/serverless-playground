@@ -52,10 +52,13 @@ tasks {
                 file("build.gradle"))
         outputs.file("build/function.zip")
         val tag = "serverless-graal"
-        commandLine("bash", "-c",
-                "docker build . -t $tag -f $rootDir/config/graal/Dockerfile-aws-lambda && " +
-                        "mkdir -p build && " +
-                        "docker run --rm --entrypoint cat $tag  /home/application/function.zip > build/function.zip")
+        commandLine("bash", "-c", """docker build . \
+                                                |-t $tag \
+                                                |-f $rootDir/config/graal/Dockerfile-aws-lambda && \
+                                                |mkdir -p build && \
+                                                |docker run \
+                                                |--rm --entrypoint cat $tag  \
+                                                |/home/application/function.zip > build/function.zip""".trimMargin())
     }
 
     register<Exec>("awsLambdaDeploy") {
