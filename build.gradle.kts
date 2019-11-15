@@ -26,27 +26,25 @@ repositories {
 val micronautVersion: String by project
 val kotlinVersion: String by project
 dependencies {
-    annotationProcessor(platform("io.micronaut:micronaut-bom:$micronautVersion"))
-    annotationProcessor("io.micronaut:micronaut-graal")
-    annotationProcessor("org.projectlombok:lombok:1.18.10")
-    annotationProcessor("io.micronaut:micronaut-inject-java")
     kapt(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     kapt("io.micronaut:micronaut-inject-java")
     kapt("io.micronaut:micronaut-validation")
-    kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
-    kaptTest("io.micronaut:micronaut-inject-java")
     compileOnly("com.oracle.substratevm:svm")
-    compileOnly("org.projectlombok:lombok:1.18.10")
+
+    implementation(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
-    implementation(platform("io.micronaut:micronaut-bom:$micronautVersion"))
-    implementation("io.micronaut:micronaut-runtime")
     implementation("io.projectreactor:reactor-core")
     implementation("io.micronaut.aws:micronaut-function-aws-custom-runtime") {
         exclude(group = "com.fasterxml.jackson.module", module = "jackson-module-afterburner")
     }
+
+    runtimeOnly("io.micronaut:micronaut-runtime")
     runtimeOnly("io.micronaut:micronaut-http-server-netty")
     runtimeOnly("ch.qos.logback:logback-classic:1.3.0-alpha4")
+
+    kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
+    kaptTest("io.micronaut:micronaut-inject-java")
     testImplementation("io.micronaut.test:micronaut-test-spock")
     testImplementation("io.micronaut:micronaut-inject-groovy")
     testImplementation("org.spockframework:spock-core") {
@@ -55,7 +53,7 @@ dependencies {
 }
 
 application {
-    mainClassName = "bearmug.lambda.ApplicationGCP"
+    mainClassName = "bearmug.lambda.Application"
 }
 
 tasks {
