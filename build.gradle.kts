@@ -1,7 +1,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    groovy
     application
     kotlin("jvm") version "1.3.50"
     kotlin("kapt") version "1.3.50"
@@ -28,7 +28,6 @@ val kotlinVersion: String by project
 dependencies {
     kapt(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     kapt("io.micronaut:micronaut-inject-java")
-    kapt("io.micronaut:micronaut-validation")
     compileOnly("com.oracle.substratevm:svm")
 
     implementation(platform("io.micronaut:micronaut-bom:$micronautVersion"))
@@ -43,13 +42,10 @@ dependencies {
     runtimeOnly("io.micronaut:micronaut-http-server-netty")
     runtimeOnly("ch.qos.logback:logback-classic:1.3.0-alpha4")
 
-    kaptTest(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     kaptTest("io.micronaut:micronaut-inject-java")
-    testImplementation("io.micronaut.test:micronaut-test-spock")
-    testImplementation("io.micronaut:micronaut-inject-groovy")
-    testImplementation("org.spockframework:spock-core") {
-        exclude(group = "org.codehaus.groovy", module = "groovy-all")
-    }
+    testImplementation("io.micronaut.test:micronaut-test-kotlintest")
+    testImplementation("io.mockk:mockk:1.9.3")
+    testImplementation("io.kotlintest:kotlintest-runner-junit5:3.3.2")
 }
 
 application {
@@ -79,6 +75,17 @@ tasks {
     withType<JavaCompile>{
         options.encoding = "UTF-8"
         options.compilerArgs.add("-parameters")
+    }
+
+    withType<Test> {
+        useJUnitPlatform()
+    }
+
+    withType<KotlinCompile> {
+        kotlinOptions {
+            jvmTarget = "1.8"
+            freeCompilerArgs = listOf("-Xjsr305=strict")
+        }
     }
 }
 
