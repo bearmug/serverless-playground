@@ -92,7 +92,7 @@ tasks {
 
     register<Exec>("awsLambdaStatsNode") {
         group = "serverless"
-        val fn = "-f serverless-nodejs"
+        val fn = "-f nodejs"
         commandLine("bash", "-c",
                 "serverless logs $fn  && serverless info $fn && serverless metrics $fn")
     }

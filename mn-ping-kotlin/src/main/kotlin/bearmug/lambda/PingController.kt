@@ -9,13 +9,13 @@ class PingController(
         private val pingService: PingService) {
 
     @Get("/kotlin")
-    fun pingJava() = pingService.pong()
+    fun pingKotlin() = pingService.pong()
 
     @Get("/graal")
     fun pingGraal() = pingService.pong()
 
     @Get("/rkotlin")
-    fun pingJavaReactive() = Mono.just(pingService.pong())
+    fun pingKotlinReactive() = Mono.just(pingService.pong())
 
     @Get("/rgraal")
     fun pingGraalReactive() = Mono.just(pingService.pong())
