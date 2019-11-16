@@ -35,8 +35,8 @@ RUN /usr/lib/graalvm/bin/native-image \
     --initialize-at-build-time=reactor.core.publisher.Flux \
     --initialize-at-build-time=reactor.core.publisher.Mono \
     -cp build/libs/serverless-playground-*-all.jar
-RUN chmod 755 bootstrap
+RUN chmod 755 config/graal/bootstrap
 RUN chmod 755 server
-RUN zip -j function.zip bootstrap server 
+RUN zip -j function.zip config/graal/bootstrap server
 EXPOSE 8080
 ENTRYPOINT ["/home/application/server"]
