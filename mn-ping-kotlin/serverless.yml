@@ -17,10 +17,10 @@ functions:
     handler: not.used.in.provided.runtime
     events:
       - http:
-          path: ping/graal-block
+          path: ping/graal
           method: get
       - http:
-          path: ping/graal-reactive
+          path: ping/rgraal
           method: get
 
 
@@ -33,24 +33,8 @@ functions:
     handler: bearmug.lambda.StreamLambdaHandler::handleRequest
     events:
       - http:
-          path: ping/jvm-block
+          path: ping/kotlin
           method: get
       - http:
-          path: ping/jvm-reactive
+          path: ping/rkotlin
           method: get
-
-  serverless-nodejs:
-    package:
-      individually: true
-      exclude:
-        - ./**
-      include:
-        - src/main/nodejs/handler.js
-    runtime: nodejs10.x
-    memorySize: 256
-    handler: src/main/nodejs/handler.ping
-    events:
-      - http:
-          path: ping/nodejs
-          method: get
-

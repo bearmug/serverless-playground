@@ -8,15 +8,15 @@ import reactor.core.publisher.Mono
 class PingController(
         private val pingService: PingService) {
 
-    @Get("/jvm-block")
+    @Get("/kotlin")
     fun pingJava() = pingService.pong()
 
-    @Get("/graal-block")
+    @Get("/graal")
     fun pingGraal() = pingService.pong()
 
-    @Get("/jvm-reactive")
+    @Get("/rkotlin")
     fun pingJavaReactive() = Mono.just(pingService.pong())
 
-    @Get("/graal-reactive")
+    @Get("/rgraal")
     fun pingGraalReactive() = Mono.just(pingService.pong())
 }

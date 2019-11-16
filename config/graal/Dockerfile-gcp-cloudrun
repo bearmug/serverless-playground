@@ -1,14 +1,6 @@
-# Stage 1: Build the JAR
-FROM gradle:5.1.1-jdk-alpine as gradle
-COPY --chown=gradle:gradle . /home/application
-WORKDIR /home/application
-RUN cp config/graal/native-image-gcp-cloudrun.properties \
-       src/main/resources/META-INF/native-image/lambda.graal/lambda-graal-application/native-image.properties
-RUN gradle build --no-daemon
-
 # Stage 2: Build the native image
 FROM oracle/graalvm-ce:19.2.1 as graalvm
-COPY --from=gradle /home/application/build/libs/serverless-playground-*-all.jar /home/application/server.jar
+COPY ./build/libs/mn*-all.jar /home/application/server.jar
 WORKDIR /home/application
 RUN gu install native-image
 RUN native-image \
@@ -16,6 +8,11 @@ RUN native-image \
     --no-fallback \
     --initialize-at-build-time=reactor.core.publisher.Flux \
     --initialize-at-build-time=reactor.core.publisher.Mono \
+    -H:Class=bearmug.lambda.Application \
+    -H:Name=gcp-native-app \
+    -H:IncludeResources=application.yml \
+    -H:IncludeResources=logback.xml \
+    -H:-AllowVMInspection \
     -cp server.jar
 
 # Stage 3: Prepare Server

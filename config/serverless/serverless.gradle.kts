@@ -1,8 +1,9 @@
 val gcpProjectId: String by project
+val gcpTag: String by project
 tasks {
     //GCP tasks=====================================================================
-    val gcpTag = "gcp-serverless-graal"
     register<Exec>("gcpAssemble") {
+        dependsOn("build")
         group = "serverless"
         inputs.files(
                 project.fileTree("src"),

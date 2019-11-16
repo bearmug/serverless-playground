@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="bearmug.lambda.PingControllerTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2019-11-16T12:51:49" hostname="ubuntu" time="1.09">
-  <properties/>
-  <testcase name="ping endpoints passed" classname="bearmug.lambda.PingControllerTest" time="1.09"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

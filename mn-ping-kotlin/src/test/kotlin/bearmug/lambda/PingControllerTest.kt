@@ -17,10 +17,10 @@ class PingControllerTest(
         private val httpClient: HttpClient) : StringSpec({
     "ping endpoints passed" {
         forall(
-                row("graal-block"),
-                row("jvm-block"),
-                row("graal-reactive"),
-                row("jvm-reactive")
+                row("graal"),
+                row("kotlin"),
+                row("rgraal"),
+                row("rkotlin")
         ) { path ->
             val response = httpClient
                     .toBlocking()
