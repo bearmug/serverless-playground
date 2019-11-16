@@ -1,4 +1,4 @@
-# Stage 2: Build the native image
+# Stage 1: Build the native image
 FROM oracle/graalvm-ce:19.2.1 as graalvm
 COPY ./build/libs/mn*-all.jar /home/application/server.jar
 WORKDIR /home/application
@@ -15,7 +15,7 @@ RUN native-image \
     -H:-AllowVMInspection \
     -cp server.jar
 
-# Stage 3: Prepare Server
+# Stage 2: Prepare Server
 FROM frolvlad/alpine-glibc
 EXPOSE 8080
 COPY --from=graalvm /home/application/gcp-native-app .

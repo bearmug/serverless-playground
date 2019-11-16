@@ -1,10 +1,3 @@
-FROM gradle:5.1.1-jdk-alpine as builder
-COPY --chown=gradle:gradle . /home/application
-WORKDIR /home/application
-RUN cp config/graal/native-image-aws-lambda.properties \
-       src/main/resources/META-INF/native-image/lambda.graal/lambda-graal-application/native-image.properties
-RUN gradle build --no-daemon
-
 FROM amazonlinux:2017.03.1.20170812 as graalvm
 # install graal to amazon linux.
 ENV LANG=en_US.UTF-8
@@ -27,16 +20,21 @@ RUN rm -rf /tmp/*
 CMD ["/usr/lib/graalvm/bin/native-image"]
 
 FROM graalvm
-COPY --from=builder /home/application/ /home/application/
+COPY ./ /home/application/
 WORKDIR /home/application
 RUN /usr/lib/graalvm/bin/gu install native-image
 RUN /usr/lib/graalvm/bin/native-image \
     --no-server \
+    -H:Class=io.micronaut.function.aws.runtime.MicronautLambdaRuntime \
+    -H:Name=server \
+    -H:IncludeResources=application.yml \
+    -H:IncludeResources=logback.xml \
+    -H:-AllowVMInspection \
     --initialize-at-build-time=reactor.core.publisher.Flux \
     --initialize-at-build-time=reactor.core.publisher.Mono \
-    -cp build/libs/serverless-playground-*-all.jar
-RUN chmod 755 config/graal/bootstrap
+    -cp build/libs/mn-*-all.jar
+RUN chmod 755 bootstrap
 RUN chmod 755 server
-RUN zip -j function.zip config/graal/bootstrap server
+RUN zip -j function.zip bootstrap server
 EXPOSE 8080
 ENTRYPOINT ["/home/application/server"]

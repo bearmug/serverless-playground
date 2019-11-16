@@ -1,6 +1,5 @@
-org: pavelfadeev
-app: my-serverless-experiment
-service: my-serverless-experiment
+app: mn-ping
+service: mn-ping-kotlin
 
 provider:
   name: aws
@@ -8,7 +7,7 @@ provider:
   stage: dev
 
 functions:
-  serverless-mn-graal:
+  mn-graal:
     package:
       individually: true
       artifact: build/function.zip
@@ -23,11 +22,10 @@ functions:
           path: ping/rgraal
           method: get
 
-
-  serverless-mn-java:
+  mn-kotlin:
     package:
       individually: true
-      artifact: build/distributions/serverless-playground-0.1.zip
+      artifact: build/distributions/mn-ping-kotlin-0.1.zip
     runtime: java8
     memorySize: 256
     handler: bearmug.lambda.StreamLambdaHandler::handleRequest

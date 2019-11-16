@@ -1,5 +1,7 @@
 val gcpProjectId: String by project
 val gcpTag: String by project
+val graalFnName: String by project
+val jvmFnName: String by project
 tasks {
     //GCP tasks=====================================================================
     register<Exec>("gcpAssemble") {
@@ -7,8 +9,8 @@ tasks {
         group = "serverless"
         inputs.files(
                 project.fileTree("src"),
-                file("config/graal/Dockerfile-gcp-cloudrun"),
-                file("build.gradle"))
+                file("$rootDir/config/graal/Dockerfile-gcp-cloudrun"),
+                file("build.gradle.kts"))
         outputs.file("build/$gcpTag-version")
         commandLine("bash", "-c","""docker build . \
                                                |-t $gcpTag \
@@ -47,10 +49,11 @@ tasks {
     ////AWS tasks=====================================================================
     register<Exec>("awsLambdaAssemble") {
         group = "serverless"
+        dependsOn("build")
         inputs.files(
                 project.fileTree("src"),
                 file("config/graal/Dockerfile-aws-lambda"),
-                file("build.gradle"))
+                file("$rootDir/build.gradle.kts"))
         outputs.file("build/function.zip")
         val tag = "serverless-graal"
         commandLine("bash", "-c", """docker build . \
@@ -64,7 +67,7 @@ tasks {
 
     register<Exec>("awsLambdaDeploy") {
         group = "serverless"
-        dependsOn("build", "awsLambdaAssemble")
+        dependsOn("awsLambdaAssemble")
         commandLine("bash", "-c", "serverless deploy")
     }
 
@@ -73,16 +76,16 @@ tasks {
         commandLine("bash", "-c", "serverless remove")
     }
 
-    register<Exec>("awsLambdaStatsJava") {
+    register<Exec>("awsLambdaStatsJvm") {
         group = "serverless"
-        val fn = "-f serverless-mn-java"
+        val fn = "-f $jvmFnName"
         commandLine("bash", "-c",
                 "serverless logs $fn  && serverless info $fn && serverless metrics $fn")
     }
 
     register<Exec>("awsLambdaStatsGraal") {
         group = "serverless"
-        val fn = "-f serverless-mn-graal"
+        val fn = "-f $graalFnName"
         commandLine("bash", "-c",
                 "serverless logs $fn  && serverless info $fn && serverless metrics $fn")
     }
