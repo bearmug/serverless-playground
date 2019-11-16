@@ -56,7 +56,7 @@ usage tier](https://aws.amazon.com/ru/lambda/pricing/). Otherwise, feel free to 
 [scenario](../config/load-test/load-test-ramping.js). Default load test configuration could be triggered like:
 ```bash
 ./gradlew loadTest -PurlArg=https://xxx.execute-api.eu-west-1.amazonaws.com/playground/ping/graal
-./gradlew loadTest -PurlArg=https://xxx.execute-api.eu-west-1.amazonaws.com/playground/ping/java
+./gradlew loadTest -PurlArg=https://xxx.execute-api.eu-west-1.amazonaws.com/playground/ping/jvm
 ```
 You can find URLs to test from serverless deployment command or from service info printout:
 ```bash

@@ -1,5 +1,0 @@
-profile: service
-defaultPackage: bearmug.lambda
----
-testFramework: junit
-sourceLanguage: java

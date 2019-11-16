@@ -1,0 +1,53 @@
+app: mn-ping
+service: mn-ping-java
+
+provider:
+  name: aws
+  region: eu-west-1
+  stage: dev
+
+functions:
+  mn-graal:
+    package:
+      individually: true
+      artifact: build/function.zip
+    runtime: provided
+    memorySize: 256
+    handler: not.used.in.provided.runtime
+    events:
+      - http:
+          path: ping/graal
+          method: get
+      - http:
+          path: ping/rgraal
+          method: get
+
+  mn-java:
+    package:
+      individually: true
+      artifact: build/distributions/mn-ping-java-0.1.zip
+    runtime: java8
+    memorySize: 256
+    handler: bearmug.lambda.StreamLambdaHandler::handleRequest
+    events:
+      - http:
+          path: ping/java
+          method: get
+      - http:
+          path: ping/rjava
+          method: get
+
+  nodejs:
+    package:
+      individually: true
+      exclude:
+        - ./**
+      include:
+        - src/main/nodejs/handler.js
+    runtime: nodejs10.x
+    memorySize: 256
+    handler: src/main/nodejs/handler.ping
+    events:
+      - http:
+          path: ping/nodejs
+          method: get
