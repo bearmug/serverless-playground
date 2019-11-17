@@ -6,6 +6,8 @@ plugins {
     id("com.github.johnrengelman.shadow") version "5.1.0"
 }
 
+apply(from = "$rootDir/config/serverless/load-test.gradle.kts")
+
 subprojects {
     apply(from = "$rootDir/config/serverless/serverless.gradle.kts")
     apply(plugin = "java")
@@ -71,4 +73,18 @@ subprojects {
     }
 }
 
+tasks {
+    register("awsDeployAll") {
+        group = "serverless"
+        subprojects.forEach { subproject ->
+            dependsOn(":${subproject.name}:awsLambdaDeploy")
+        }
+    }
 
+    register("awsRemoveAll") {
+        group = "serverless"
+        subprojects.forEach { subproject ->
+            dependsOn(":${subproject.name}:awsLambdaRemove")
+        }
+    }
+}
