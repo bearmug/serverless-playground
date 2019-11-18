@@ -5,7 +5,8 @@ export let options = {
     minIterationDuration: "10ms",
     vus: 1,
     vusMax: 1,
-    duration: "10s"
+    duration: "10s",
+    summaryTrendStats: ["min", "max", "p(50)", "p(90)", "p(95)", "p(99)"]
 };
 
 export default function() {
