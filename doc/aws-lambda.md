@@ -1,20 +1,26 @@
-- [Serverless setup playground](#lambdas-playground)
+- [AWS Lambdas playground](#aws-lambdas-playground)
   * [Pre-requisites](#pre-requisites)
     + [Code deployment pipeline](#code-deployment-pipeline)
     + [AWS account](#aws-account)
     + [AWS role](#aws-role)
   * [AWS Deployment](#aws-deployment)
   * [Performance validation](#performance-validation)
+    + [Cold start test](#cold-start-test)
+    + [Warm runs test](#warm-runs-test)
+    + [Measurements parsing](#measurements-parsing)
+      - [Load test main statistics query](#load-test-main-statistics-query)
+      - [Load test init timings query](#load-test-init-timings-query)
     + [Performance samples](#performance-samples)
       - [Client-side measurements](#client-side-measurements)
       - [AWS-side measurements](#aws-side-measurements)
   * [Logs and stats review](#logs-and-stats-review)
+  * [Some outcomes](#some-outcomes)
 
 # AWS Lambdas playground
 This part is an experiment with AWS Lambda flavors:
 * **micronaut Java8 and Kotlin setups**
-    [Micronaut](https://micronaut.io/) -based lambdas, running with java8 [existing AWS runtime](https://micronaut-projects.github.io/micronaut-aws/latest/guide/#lambda)
-    and includes lambda function plus API gateway instance. Simple, but really slow on cold starts. Here is a
+    [Micronaut](https://micronaut.io/) -based lambdas, run with java8 [existing AWS runtime](https://micronaut-projects.github.io/micronaut-aws/latest/guide/#lambda)
+    and include lambda function plus API gateway instance. Simple, but really slow on cold starts. Here is a
     [link](https://micronaut-projects.github.io/micronaut-aws/latest/guide/#apiProxy) with an instruction how to generate 
     lambda from the scratch with micronaut tooling.
 * **native lambdas for Java8 and Kotlin**
@@ -170,3 +176,14 @@ This data captured from lambdas logs and parsed with queries above.
 ./gradlew :mn-ping-kotlin:aLSG
 ./gradlew :mn-ping-kotlin:aLSJ
 ```
+
+## Some outcomes
+* JVM-based "cold" start is still the thing. It guarantees roundtrips ~5-7 seconds, which is a huge roadblock
+  for latency-sensible scenarios. It does not matter whether lambda is packed from Kotlin or Java sources.
+* Kotlin artifact adds-up a little on top of Java8 one. Those are 38.58 MB (Java) and 44.37 MB (Kotlin).
+* GraalVM approaches Node.js in a sense of "cold" start timings and at the same time keeps the lambda
+  door open for Java-based solutions. 
+* Worth to mention that Java/Kotlin GraalVM-generated artifacts are exactly the same size, 14.62 MB.
+* Node.js demonstrated great improvements and now it is blazingly (and consistently) fast. Actually, it is
+  the platform with the most stable performance. It's median and 99%-ile numbers are barely different. Of ourse
+  it is correlated with Node.js artifact size, only 297 bytes :)
