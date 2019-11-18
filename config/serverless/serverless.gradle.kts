@@ -80,20 +80,25 @@ tasks {
         group = "serverless"
         val fn = "-f $jvmFnName"
         commandLine("bash", "-c",
-                "serverless logs $fn  && serverless info $fn && serverless metrics $fn")
+                "serverless logs $fn && serverless metrics $fn")
     }
 
     register<Exec>("awsLambdaStatsGraal") {
         group = "serverless"
         val fn = "-f $graalFnName"
         commandLine("bash", "-c",
-                "serverless logs $fn  && serverless info $fn && serverless metrics $fn")
+                "serverless logs $fn && serverless metrics $fn")
     }
 
     register<Exec>("awsLambdaStatsNode") {
         group = "serverless"
         val fn = "-f nodejs"
         commandLine("bash", "-c",
-                "serverless logs $fn  && serverless info $fn && serverless metrics $fn")
+                "serverless logs $fn && serverless metrics $fn")
+    }
+
+    register<Exec>("awsLambdaInfo") {
+        group = "serverless"
+        commandLine("bash", "-c", "serverless info")
     }
 }

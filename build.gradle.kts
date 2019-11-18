@@ -72,19 +72,3 @@ subprojects {
         }
     }
 }
-
-tasks {
-    register("awsDeployAll") {
-        group = "serverless"
-        subprojects.forEach { subproject ->
-            dependsOn(":${subproject.name}:awsLambdaDeploy")
-        }
-    }
-
-    register("awsRemoveAll") {
-        group = "serverless"
-        subprojects.forEach { subproject ->
-            dependsOn(":${subproject.name}:awsLambdaRemove")
-        }
-    }
-}
