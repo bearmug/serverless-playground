@@ -185,5 +185,5 @@ This data captured from lambdas logs and parsed with queries above.
   door open for Java-based solutions. 
 * Worth to mention that Java/Kotlin GraalVM-generated artifacts are exactly the same size, 14.62 MB.
 * Node.js demonstrated great improvements and now it is blazingly (and consistently) fast. Actually, it is
-  the platform with the most stable performance. It's median and 99%-ile numbers are barely different. Of ourse
+  the platform with the most stable performance. It's median and 99%-ile numbers are barely different. Likely
   it is correlated with Node.js artifact size, only 297 bytes :)
