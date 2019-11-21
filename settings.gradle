@@ -2,3 +2,4 @@ rootProject.name="serverless-playground"
 
 include 'mn-ping-java'
 include "mn-ping-kotlin"
+include "mn-reactive-kotlin"

@@ -1,0 +1,72 @@
+app: mn-reactive
+service: mn-reactive-kotlin
+
+provider:
+  name: aws
+  region: eu-west-1
+  stage: dev
+  stackName: reactive-book-store
+  runtime: provided
+  memorySize: 256
+  environment:
+    DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+
+package:
+  individually: false
+  artifact: build/function.zip
+
+functions:
+  mn-blocking:
+    handler: not.used.in.provided.runtime
+    events:
+      - http:
+          path: blocking/book
+          method: post
+      - http:
+          path: blocking/book/{id}
+          method: get
+      - http:
+          path: blocking/book/{id}
+          method: delete
+
+  mn-reactive:
+    handler: not.used.in.provided.runtime
+    events:
+      - http:
+          path: reactive/book
+          method: post
+      - http:
+          path: reactive/book/{id}
+          method: get
+      - http:
+          path: reactive/book/{id}
+          method: delete
+
+resources:
+  Resources:
+    BooksDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
