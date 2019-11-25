@@ -1,9 +1,9 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.3.50"
-    kotlin("kapt") version "1.3.50"
-    id("org.jetbrains.kotlin.plugin.allopen") version "1.3.50"
+    kotlin("jvm") version "1.3.60"
+    kotlin("kapt") version "1.3.60"
+    id("org.jetbrains.kotlin.plugin.allopen") version "1.3.60"
 }
 
 val micronautVersion: String by project
