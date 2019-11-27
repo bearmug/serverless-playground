@@ -1,0 +1,8 @@
+[{
+  "name": "sun.nio.ch.SelectorImpl",
+  "allDeclaredFields": true,
+  "fields": [
+    { "name": "selectedKeys",  "allowUnsafeAccess" : true},
+    { "name": "publicSelectedKeys",  "allowUnsafeAccess" : true}
+  ]
+}]

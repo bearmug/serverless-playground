@@ -1,19 +1,23 @@
 # Stage 1: Build the native image
-FROM oracle/graalvm-ce:19.3.0 as graalvm
+FROM oracle/graalvm-ce:19.3.0-java11 as graalvm
+RUN gu install native-image
+RUN yum install -y libstdc++-static
 COPY ./build/libs/mn*-all.jar /home/application/server.jar
 WORKDIR /home/application
-RUN gu install native-image
 RUN native-image \
-    --no-server \
-    --no-fallback \
     -H:Class=bearmug.lambda.Application \
     -H:Name=gcp-native-app \
     -H:IncludeResources=application.yml \
     -H:IncludeResources=logback.xml \
     -H:-AllowVMInspection \
+    --no-server \
+    --no-fallback \
     --initialize-at-build-time=reactor.core.publisher.Flux \
     --initialize-at-build-time=reactor.core.publisher.Mono \
-    -cp server.jar
+    --static \
+    --verbose \
+    -cp server.jar \
+    -H:ReflectionConfigurationResources=META-INF/native-image/bearmug.lambda/reflection-config.json
 
 # Stage 2: Prepare Server
 FROM frolvlad/alpine-glibc

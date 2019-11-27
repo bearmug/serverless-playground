@@ -1,6 +1,5 @@
 package bearmug.lambda;
 
-import io.micronaut.context.env.Environment;
 import io.micronaut.runtime.Micronaut;
 
 public class Application {
